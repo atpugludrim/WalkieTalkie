@@ -1,0 +1,125 @@
+<html>
+
+<head>
+
+<title>File directory</title>
+
+<link rel="stylesheet" type="text/css" href="mystyle.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+</head>
+
+<body><div class="boxed"><table><tr>
+<td id="weak"><a href="Ca-OSAD.py"> Ca-OSAD.py </a></td>
+<td id="weak"><a href="FLev.py"> FLev.py </a></td>
+<td id="weak"><a href="Ha-kFP.py"> Ha-kFP.py </a></td>
+<td id="weak"><a href="Pa-CUMUL.py"> Pa-CUMUL.py </a></td>
+</tr>
+<tr>
+<td id="weak"><a href="Pa-FeaturesSVM.py"> Pa-FeaturesSVM.py </a></td>
+<td id="weak"><a href="Wa-OSAD.py"> Wa-OSAD.py </a></td>
+<td id="weak"><a href="cc.py"> cc.py </a></td>
+<td id="weak"><a href="clLev.cpp"> clLev.cpp </a></td>
+</tr>
+<tr>
+<td id="weak"><a href="clgen_stratify.cpp"> clgen_stratify.cpp </a></td>
+<td id="weak"><a href="fextractor.py"> fextractor.py </a></td>
+<td id="weak"><a href="flearner.cpp"> flearner.cpp </a></td>
+<td id="weak"><a href="gen-list.py"> gen-list.py </a></td>
+</tr>
+<tr>
+<td id="weak"><a href="jac.py"> jac.py </a></td>
+<td id="weak"><a href="kNN.py"> kNN.py </a></td>
+<td id="weak"><a href="loaders.py"> loaders.py </a></td>
+<td id="weak"><a href="mnb.py"> mnb.py </a></td>
+</tr>
+<tr>
+<td id="weak"><a href="nb.py"> nb.py </a></td>
+<td id="weak"><a href="timing.py"> timing.py </a></td>
+<td id="weak"><a href="vngpp.py"> vngpp.py </a></td>
+</table></div><div class="boxed"><h2>Notes</h2><p><h3> Data set </h3>
+</p>
+<p>Each attack takes in elements from the data set in DATA_LOC. 
+X-Y elements are considered to be instances of site X and are monitored.
+Integer elements Z without a hyphen are considered to be non-monitored elements
+in the open world; each should come from a different site.
+X, Y should start from 0.
+</p>
+<p>The input files should be well-filtered, i.e. it should not have missing
+or empty elements. There should be at least 75 cells in each instance.
+</p>
+<p>Attacks read data based on TRAIN_LIST and TEST_LIST. 
+They also need to know if there are any open world elements (OPEN = 0 or 1). 
+</p>
+<p><h3> Generating training/testing set </h3>
+</p>
+<p>gen-list.py generates those files:
+</p>
+<p>	python gen-list.py options-XX
+</p>
+<p>It takes in options-gen-list, which is based on:
+MODE, CLOSED_SITENUM, CLOSED_INSTNUM, OPEN_INSTNUM, DATA_LOC, DATA_TYPE, OUTPUT_LOC, and FOLD. 
+It generates two files, OUTPUT_LOC + "trainlist" and OUTPUT_LOC + "testlist". 
+</p>
+<p>Data is in the following format:
+Each line is a pair time\tpacketsize.
+Packetsize is positive if outgoing and negative if incoming
+In the cell format, |packetsize| = 1.
+</p>
+<p><h3>Non-lev-based attacks</h3>
+</p>
+<p>To run a non-lev-based attack algorithm, do the following:
+</p>
+<p>python attack-tenfold.py attack_list options
+</p>
+<p>The above code does the following for each attackname in attack_list, after cell data is put in INPUT_LOC:
+- For fold_num from 0 to 9:
+	-- "gen_list.py options" generates train/test lists for fold X.
+	-- "python attackname.py options" calculates accuracy for fold X. 
+- Combine the above results. 
+</p>
+<p>A variation of attack-tenfold.py is attack-kNC.py, which uses ten-fold cross validation to increase TNR. 
+</p>
+<p>The non-lev-based algorithms are:
+</p>
+<p>cc
+jac
+nb
+mnb
+timing
+Pa-FeaturesSVM
+vngpp
+kNN
+Pa-CUMUL
+Ha-kFP
+</p>
+<p>kNN requires flearner.cpp to be compiled. 
+</p>
+<p><h3>Lev-based attacks</h3>
+</p>
+<p>Lev-based algorithms are slow, and require pre-processing.
+Therefore, running each attack is a two-step process (each step triggered manually).
+The first step generally requires computational power. 
+Pre-processing starts by compiling clLev:
+</p>
+<p>	mpiCC clLev.cpp -o clLev 
+</p>
+<p>To run:
+</p>
+<p>	mpirun -n CORE_TOTAL ./clLev options-XX </p>
+ 
+The lev files go to OUTPUT_LOC of options-XX. clgen_stratify will read them. 
+</p>
+<p><h3> Output </h3>
+</p>
+<p>OUTPUT_LOC states where these files are to be created:
+</p>
+<p>1, OUTPUT_LOC + ".log" - contains misc details, but final two lines must be time, TPR: x/x and time, FPR: x/x </p>
+<p>2. OUTPUT_LOC + ".results" - contains classification of every input file
+Each line contains (2 + number of classes) tab-delimited numbers.
+First is the time, second is the ground truth, and the numbers thereafter are the "match" of each class.
+The highest-scoring match is the assigned class. 
+</p>
+</p>
+<p></p>
+</div></body>

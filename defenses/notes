@@ -1,0 +1,8 @@
+tdef.py: Traffic morphing (NDSS 2009). 
+hdef.py: HTTPOS split (NDSS 2011). 
+pdef.py: Decoy pages (WPES 2011). 
+bdef.py: BuFLO (IEEE S&P 2012).
+tamaraw.py: Tamaraw (CCS 2014).
+cluster.py: Supersequence (USENIX 2014). 
+walkie-browser.zip: Walkie-Talkie half-duplex implementation for browser (USENIX 2017).
+wlakie-padding.zip: Burst molding for Walkie-Talkie (USENIX 2017). 

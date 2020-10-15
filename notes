@@ -1,0 +1,68 @@
+Walkie-Talkie has two components:
+1) Half-duplex communication and
+2) Burst molding
+
+Cell sequence is converted into BURST SEQUENCES which are
+then molded into burst sequences of other burst sequences to
+obfuscate patterns. Client sends only when server has
+satisfied all previous requests. Client server communication
+is interleaved. A lot of information resides in the sequence
+direction patterns of cells. This breaks all the + and -
+sequences into groups of only + and only - (The reason why
+it breaks the deep-fingerprinting attack.)
+
+Burst sequences are used because they can be molded with
+little overhead. Thing buying in wholesale, there's larger
+margin for discount. Molding bursts is also computationally
+cheaper.
+
+Half-duplex is implementated by ADDING TWO STATES to the
+browser, Walkie and Talkie. Walkie is idle state while
+Talkie is loading state. Browser doesn't send any request
+when any other existing connection is open.
+
+Uses OPTIMISTIC DATA which establishes both TCP and HTTP
+GET request at the same time. This is helpful to reduce
+amount of padding required to confuse attacker. Optimistic
+data technique is used by both Tor and Firefox using SOCKS
+proxy.
+
+Burst molding is INSPIRED FROM PANCHENKO ET AL'S DECOY.
+Decoy loads two pages in parallel to confuse adversary with
+100% bandwidth overhead. A sensitive page is loaded with
+non-sensitive page and vice versa. If non-sensitive page is
+very popular, the attacker suffers from base rate fallacy.
+
+Burst molding simulates loading two pages by loading the
+SUPERSEQUENCE of two burst sequences. Lower overhead. A
+sequence s' is supersequence of s if s is contained in s'.
+This idea is from Supersequence and Glove paper. Burst
+molding adds padding to original burst sequence so that it
+is molded into the supersequence.
+
+Supersequence is NP-hard problem <-- Wang et al.
+
+Method: if number of cells in burst of real page is b_i =
+(b_i+, b_i-) and burst for decoy page is b'_i = (b'_i+,
+b'_i-), this will send b_hat_i = (max{b_i+,b'_i+}, max{b_i-,
+b'_i-}). <-- for every burst sequence.
+
+If number of bursts in pages are different, fake bursts
+consisting entirely of fake cells is added to shorter
+sequence.
+
+
+Advantages: Cover story. Base rate. Minimizing computation.
+Minimizing client information.
+
+The choice of decoy pages is not random, instead pages are
+selected such that their burst sequences are already very
+similar and overhead is minimum. Each decoy is paired with
+one real page. It is a symmetric relation. Only possible
+when client knows the burst sequences. Otherwise, choose
+randomly.
+
+KW
+study SOCKS, CUMUL
+study decoy Panchenko et al.
+study kNN, Glove, Supersequence
